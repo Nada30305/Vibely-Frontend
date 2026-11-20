@@ -1,0 +1,187 @@
+
+<header class="navbar">
+  <div class="logo">Vibely<span>.</span></div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#events">Explore Events</a>
+  </nav>
+
+  <a href="#events" class="login-btn">Explore</a>
+</header>
+
+<main>
+  <!-- HERO SECTION -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <span class="tag">DISCOVER YOUR NEXT EXPERIENCE</span>
+
+      <h1>
+        Find Events.<br>
+        <span>Live Experiences.</span>
+      </h1>
+
+      <p>
+        Discover exciting campus events, connect with people
+        and experience something new.
+      </p>
+
+      <a href="#events" class="explore-btn">Explore Events →</a>
+    </div>
+
+    <div class="hero-decoration">
+      <div class="decoration-circle circle-one"></div>
+      <div class="decoration-circle circle-two"></div>
+      <div class="decoration-circle circle-three"></div>
+    </div>
+  </section>
+
+  <!-- EVENTS SECTION -->
+  <section class="events-section" id="events">
+
+    <div class="events-heading">
+      <span class="tag">FIND YOUR NEXT EXPERIENCE</span>
+      <h2>Explore <span>Events</span></h2>
+      <p>Discover exciting events happening around your campus.</p>
+    </div>
+
+    <!-- SEARCH AND FILTERS -->
+    <div class="search-container">
+
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search events by title or keyword..."
+          [(ngModel)]="keyword"
+          (ngModelChange)="onKeywordChange()"
+        >
+      </div>
+
+      <div class="filters">
+
+        <select
+          [(ngModel)]="selectedCategory"
+          (ngModelChange)="searchEvents()"
+        >
+          @for (category of categories; track category) {
+            <option [value]="category">{{ category }}</option>
+          }
+        </select>
+
+        <input
+          type="date"
+          [(ngModel)]="selectedDate"
+          (ngModelChange)="searchEvents()"
+        >
+
+        <button
+          type="button"
+          class="reset-btn"
+          (click)="resetFilters()"
+        >
+          Reset
+        </button>
+
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-info">
+      <p>Available Events: <strong>{{ events().length }}</strong></p>
+    </div>
+
+    @if (loading()) {
+      <div class="loading-message">
+        <p>Loading events...</p>
+      </div>
+    }
+
+    @else if (errorMessage()) {
+      <div class="empty-message">
+        <h3>Unable to load events</h3>
+        <p>{{ errorMessage() }}</p>
+        <button type="button" (click)="searchEvents()">Try Again</button>
+      </div>
+    }
+
+    @else if (events().length === 0) {
+      <div class="empty-message">
+        <h3>No events found</h3>
+        <p>Try changing your search or filters.</p>
+        <button type="button" (click)="resetFilters()">Show All Events</button>
+      </div>
+    }
+
+    @else {
+      <div class="events-grid">
+
+        @for (event of events(); track event.id) {
+
+          <article class="event-card">
+
+            <div class="event-card-top">
+              <span class="category-badge">{{ event.category }}</span>
+
+              <span class="seats-badge">
+                {{ event.available_seats }} seats left
+              </span>
+            </div>
+
+            <div class="event-info">
+
+              <h3>{{ event.title }}</h3>
+
+              <p class="event-description">
+                {{ event.description }}
+              </p>
+
+              <div class="event-details">
+                <p>
+                  <span>📅</span>
+                  {{ formatDate(event.start_date) }}
+                </p>
+
+                <p>
+                  <span>📍</span>
+                  {{ event.venue_name }} - {{ event.location }}
+                </p>
+
+                <p>
+                  <span>👥</span>
+                  Capacity: {{ event.capacity }}
+                </p>
+              </div>
+
+              @if (selectedEventId() === event.id) {
+                <div class="extra-info">
+                  <p><strong>Start:</strong> {{ formatDate(event.start_date) }}</p>
+                  <p><strong>End:</strong> {{ formatDate(event.end_date) }}</p>
+                  <p><strong>Status:</strong> {{ event.status || 'Available' }}</p>
+                </div>
+              }
+
+              <button
+                type="button"
+                class="details-btn"
+                (click)="toggleEventInfo(event.id)"
+              >
+                {{ selectedEventId() === event.id ? 'Hide Details' : 'View Details →' }}
+              </button>
+
+            </div>
+          </article>
+
+        }
+
+      </div>
+    }
+
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Vibely<span>.</span></div>
+  <p>Discover. Connect. Experience.</p>
+  <p class="copyright">© 2026 Vibely. All rights reserved.</p>
+</footer>
