@@ -1,0 +1,119 @@
+<div class="details-page">
+
+  <nav class="navbar">
+    <a routerLink="/" class="logo"><span>◆</span> Vibely</a>
+
+    <div class="nav-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/events" class="active">Events</a>
+      <a routerLink="/#about">About</a>
+    </div>
+
+    <a routerLink="/events" class="nav-button">Explore Events</a>
+  </nav>
+
+  <div class="loading-message" *ngIf="loading">
+    <div class="loader"></div>
+    <p>Loading event details...</p>
+  </div>
+
+  <div class="error-message" *ngIf="!loading && errorMessage">
+    <h2>Oops!</h2>
+    <p>{{ errorMessage }}</p>
+    <a routerLink="/events">Back to Events</a>
+  </div>
+
+  <main class="details-container" *ngIf="!loading && event">
+
+    <a routerLink="/events" class="back-link">← Back to Events</a>
+
+    <section class="details-card">
+
+      <div class="details-banner">
+        <span class="event-category">
+          {{ event.category || 'General' }}
+        </span>
+
+        <div class="banner-decoration">VIBELY</div>
+        <div class="banner-icon">✦</div>
+      </div>
+
+      <div class="details-content">
+
+        <span class="section-label">EVENT DETAILS</span>
+
+        <h1>{{ event.title }}</h1>
+
+        <p class="description">
+          {{ event.description || 'No description available.' }}
+        </p>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span class="info-icon">▦</span>
+            <div>
+              <small>Date</small>
+              <strong>{{ event.start_date | date:'fullDate' }}</strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">◷</span>
+            <div>
+              <small>Start Time</small>
+              <strong>{{ event.start_date | date:'shortTime' }}</strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">◷</span>
+            <div>
+              <small>End Time</small>
+              <strong>{{ event.end_date | date:'shortTime' }}</strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">⌖</span>
+            <div>
+              <small>Location</small>
+              <strong>{{ event.venue_name || 'Not specified' }}</strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">♧</span>
+            <div>
+              <small>Capacity</small>
+              <strong>{{ event.capacity }} Seats</strong>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="info-icon">✦</span>
+            <div>
+              <small>Available Seats</small>
+              <strong>{{ event.available_seats }}</strong>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="details-footer">
+          <span>Discover. Connect. Experience.</span>
+          <button type="button" disabled>Reservation Coming Soon</button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-logo"><span>◆</span> Vibely</div>
+    <p>Discover. Connect. Experience.</p>
+    <div class="copyright">© 2026 Vibely. All rights reserved.</div>
+  </footer>
+
+</div>

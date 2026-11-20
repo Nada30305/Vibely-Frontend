@@ -1,0 +1,401 @@
+<div class="dashboard">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="logo">
+      <span>◆</span>
+      Vibely
+    </div>
+
+    <div class="admin-profile">
+      <div class="avatar">AD</div>
+      <div>
+        <h4>Admin</h4>
+        <p>Administrator</p>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a>▦ Dashboard</a>
+      <a>♙ Users</a>
+      <a>▣ Events</a>
+      <a class="active">＋ Create Event</a>
+      <a>⚙ Settings</a>
+    </nav>
+
+    <div class="logout">↪ Logout</div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Header -->
+    <header class="header">
+      <h3>Admin Dashboard</h3>
+
+      <div class="header-right">
+        <span>🔔</span>
+        <div class="avatar">AD</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <section class="content">
+
+      <div class="page-title">
+        <h1>Create New Event</h1>
+        <p>Create and manage your events easily with Vibely.</p>
+      </div>
+
+      <!-- Statistics Cards -->
+      <div class="stats">
+
+        <div class="stat-card">
+          <span>📅</span>
+          <div>
+            <h2>Events</h2>
+            <p>Manage events</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span>👥</span>
+          <div>
+            <h2>Participants</h2>
+            <p>Manage registrations</p>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <span>✓</span>
+          <div>
+            <h2>Easy Setup</h2>
+            <p>Create your event</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Events -->
+      <div class="events-section">
+
+        <div class="events-heading">
+          <h2>Recent Events</h2>
+          <p>Manage and view your created events.</p>
+        </div>
+
+        @if (events.length > 0) {
+
+          <div class="events-list">
+
+            @for (item of events; track item.id) {
+
+              <div class="event-item">
+
+                <div class="event-info">
+                  <h3>{{ item.title }}</h3>
+                  <p [innerHTML]="item.description"></p>
+                  <span>{{ item.category }}</span>
+                </div>
+
+                <div class="event-details">
+
+                  <p>📅 {{ item.start_date | date:'medium' }}</p>
+                  <p>📍 {{ item.venue_name }}</p>
+                  <p>👥 {{ item.available_seats }} / {{ item.capacity }} seats</p>
+
+                  <div class="event-actions">
+
+                    <span class="event-status">{{ item.status }}</span>
+
+                    <button
+                      class="edit-btn"
+                      (click)="editEvent(item)">
+                      Edit
+                    </button>
+
+                    <button
+                      class="delete-btn"
+                      (click)="deleteEvent(item.id)">
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        } @else {
+
+          <p>No events found.</p>
+
+        }
+
+      </div>
+
+      <!-- Event Wizard -->
+      <div class="wizard-card">
+
+        <div class="wizard-heading">
+          <h2>Event Information</h2>
+          <p>Complete the following steps to create your event.</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="steps">
+
+          <div class="step" [class.active]="currentStep >= 1">
+            <span>1</span>
+            <p>Basic Info</p>
+          </div>
+
+          <div class="step" [class.active]="currentStep >= 2">
+            <span>2</span>
+            <p>Date & Time</p>
+          </div>
+
+          <div class="step" [class.active]="currentStep >= 3">
+            <span>3</span>
+            <p>Location</p>
+          </div>
+
+          <div class="step" [class.active]="currentStep >= 4">
+            <span>4</span>
+            <p>Review</p>
+          </div>
+
+        </div>
+
+        <!-- STEP 1 -->
+        @if (currentStep === 1) {
+
+          <div class="form-section">
+
+            <h3>Basic Information</h3>
+
+            <label>Event Title</label>
+
+            <input
+              type="text"
+              [(ngModel)]="event.title"
+              placeholder="Enter event title">
+
+            <label>Description</label>
+
+            <!-- Rich Text Editor -->
+            <div class="editor-toolbar">
+
+              <button
+                type="button"
+                (mousedown)="saveSelection($event)"
+                (click)="formatText('bold')">
+                <b>B</b>
+              </button>
+
+              <button
+                type="button"
+                (mousedown)="saveSelection($event)"
+                (click)="formatText('italic')">
+                <i>I</i>
+              </button>
+
+              <button
+                type="button"
+                (mousedown)="saveSelection($event)"
+                (click)="formatText('underline')">
+                <u>U</u>
+              </button>
+
+              <button
+                type="button"
+                (mousedown)="saveSelection($event)"
+                (click)="formatText('insertUnorderedList')">
+                • List
+              </button>
+
+            </div>
+
+            <div
+              id="descriptionEditor"
+              class="description-editor"
+              contenteditable="true"
+              dir="ltr"
+              spellcheck="false"
+              data-placeholder="Describe your event..."
+              (input)="updateDescription($event)">
+            </div>
+
+            <label>Category</label>
+
+            <select [(ngModel)]="event.category">
+              <option value="">Select category</option>
+              <option value="Technology">Technology</option>
+              <option value="Education">Education</option>
+              <option value="Culture">Culture</option>
+              <option value="Sport">Sport</option>
+            </select>
+
+          </div>
+
+        }
+
+        <!-- STEP 2 -->
+        @if (currentStep === 2) {
+
+          <div class="form-section">
+
+            <h3>Date & Time</h3>
+
+            <label>Event Date</label>
+            <input type="date" [(ngModel)]="event.date">
+
+            <label>Start Time</label>
+            <input type="time" [(ngModel)]="event.startTime">
+
+            <label>End Time</label>
+            <input type="time" [(ngModel)]="event.endTime">
+
+          </div>
+
+        }
+
+        <!-- STEP 3 -->
+        @if (currentStep === 3) {
+
+          <div class="form-section">
+
+            <h3>Location & Capacity</h3>
+
+            <label>Event Venue</label>
+
+            <select [(ngModel)]="event.venue" name="venue" required>
+
+              <option [ngValue]="0">Select a venue</option>
+
+              @for (venue of venues; track venue.id) {
+
+                <option [ngValue]="venue.id">
+                  {{ venue.name }} - Capacity: {{ venue.capacity }}
+                </option>
+
+              }
+
+            </select>
+
+            <label>Maximum Capacity</label>
+
+            <input
+              type="number"
+              [(ngModel)]="event.capacity"
+              placeholder="Enter capacity"
+              min="1">
+
+          </div>
+
+        }
+
+        <!-- STEP 4 -->
+        @if (currentStep === 4) {
+
+          <div class="form-section review">
+
+            <h3>Review Your Event</h3>
+
+            <p><strong>Title:</strong> {{ event.title }}</p>
+
+            <p><strong>Description:</strong></p>
+
+            <div
+              class="review-description"
+              [innerHTML]="event.description">
+            </div>
+
+            <p><strong>Category:</strong> {{ event.category }}</p>
+
+            <p><strong>Date:</strong> {{ event.date }}</p>
+
+            <p><strong>Start Time:</strong> {{ event.startTime }}</p>
+
+            <p><strong>End Time:</strong> {{ event.endTime }}</p>
+
+            <p><strong>Venue:</strong> {{ getVenueName() }}</p>
+
+            <p><strong>Capacity:</strong> {{ event.capacity }}</p>
+
+          </div>
+
+        }
+
+        <!-- Error Message -->
+        @if (errorMessage) {
+
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+
+        }
+
+        <!-- Success Message -->
+        @if (successMessage) {
+
+          <div class="success-message">
+            {{ successMessage }}
+          </div>
+
+        }
+
+        <!-- Wizard Buttons -->
+        <div class="wizard-buttons">
+
+          @if (currentStep > 1) {
+
+            <button
+              class="previous-btn"
+              type="button"
+              (click)="previousStep()">
+              Previous
+            </button>
+
+          }
+
+          @if (currentStep < 4) {
+
+            <button
+              class="next-btn"
+              type="button"
+              (click)="nextStep()">
+              Next →
+            </button>
+
+          }
+
+          @if (currentStep === 4) {
+
+            <button
+              class="next-btn"
+              type="button"
+              (click)="createEvent()"
+              [disabled]="isSaving">
+
+              {{ isSaving ? 'Saving...' : (isEditing ? 'Update Event' : 'Create Event') }}
+
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

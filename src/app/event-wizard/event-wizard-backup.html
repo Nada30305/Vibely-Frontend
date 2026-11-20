@@ -1,0 +1,46 @@
+\<!-- Recent Events -->
+
+\<div class="events-section">
+
+&#x20; \<div class="events-heading">     \<h2>Recent Events\</h2>     \<p>Manage and view your created events.\</p>   \</div>
+
+@if (events.length > 0) {
+\<div class="events-list">
+
+```
+  @for (item of events; track item.id) {
+    <div class="event-item">
+
+      <div class="event-info">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+        <span>{{ item.category }}</span>
+      </div>
+
+      <div class="event-details">
+  <p>📅 {{ item.start_date | date:'medium' }}</p>
+  <p>📍 {{ item.venue_name }}</p>
+  <p>👥 {{ item.available_seats }} / {{ item.capacity }} seats</p>
+
+  <div class="event-actions">
+    <span class="event-status">{{ item.status }}</span>
+
+    <button
+      class="delete-btn"
+      (click)="deleteEvent(item.id)">
+      Delete
+    </button>
+  </div>
+</div>
+
+    </div>
+  }
+
+</div>
+```
+
+} @else {
+\<p>No events found.\</p>
+}
+
+\</div>
